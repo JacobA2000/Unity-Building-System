@@ -137,6 +137,24 @@ public class BuildingSystem : MonoBehaviour
             position[3] = new Vector3(objectCollider.bounds.center.x, objectCollider.bounds.center.y,
                             (objectCollider.bounds.center.z - objectCollider.bounds.size.z / 2f)) + snappingOffset;
 
+            //DEBUG STUFF
+            //GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //sphere.transform.position = position[0];
+            //sphere.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+
+            //GameObject sphere1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //sphere1.transform.position = position[1];
+            //sphere1.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+
+            //GameObject sphere2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //sphere2.transform.position = position[2];
+            //sphere2.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+
+            //GameObject sphere3 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //sphere3.transform.position = position[3];
+            //sphere3.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+            //END OF DSEBUG STUFF
+
             Vector3 updatedPosition = currentPosition;
             float minDistance = float.MaxValue;
             int index = 0;
@@ -193,6 +211,4 @@ public class BuildingSystem : MonoBehaviour
             Destroy(temp);
         }
     }
-
-
 }

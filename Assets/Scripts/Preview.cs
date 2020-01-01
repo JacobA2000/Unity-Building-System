@@ -54,6 +54,9 @@ public class Preview : MonoBehaviour
 
     private void OnTriggerEnter(Collider _other)
     {
+
+        MeshCollider otherCollider = _other.GetComponent<MeshCollider>();
+
         if (_other.tag != "Floor")
         {
             if (tag == "Wall" || tag == "Door")
@@ -62,14 +65,14 @@ public class Preview : MonoBehaviour
                 {
                     BuildingSystem.Instance.objectToSnap = _other.gameObject;
                     BuildingSystem.Instance.snapping = true;
-                    Debug.Log("W or D hitting F");
+                    BuildingSystem.Instance.heightOffset = otherCollider.bounds.size.y /2;
+                    Debug.Log("W or D hitting F" + otherCollider.bounds.size.y /2);
                 }
             }
             else if (tag == "Roof")
             {
                 if (_other.tag == "Wall" || _other.tag == "Door")
                 {
-                    MeshCollider otherCollider = _other.GetComponent<MeshCollider>();
                     BuildingSystem.Instance.heightOffset = _other.transform.position.y + otherCollider.bounds.size.y / 2f;
                     BuildingSystem.Instance.snappingOffset = meshcollider.bounds.center;
                     Debug.Log("R hitting W or D");
