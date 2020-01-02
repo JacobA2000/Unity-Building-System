@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class BuildingSystem : MonoBehaviour
 {
+    bool debugcreated1 = false;
+    bool debugcreated2 = false;
+
     [Header("GENERAL")]
     public bool AllowSnapping;
     public float SnappingDistance;
@@ -121,6 +124,25 @@ public class BuildingSystem : MonoBehaviour
             currentPosition *= GridSize;
             currentPosition += Vector3.one * GridOffset;
         }
+        else if (objectToSnap.tag == "Wall" || objectToSnap.tag == "Door")
+        {
+            MeshCollider objectCollider = objectToSnap.GetComponent<MeshCollider>();
+            Vector3[] position = new Vector3[1];
+
+            position[0] = objectCollider.bounds.center + snappingOffset;
+
+            //DEBUG
+            if (!debugcreated1)
+            {
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = position[0];
+                sphere.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                debugcreated1 = true;
+            }
+            //END DEBUG
+
+            FindBestSnap(position);
+        }
         else
         {
             MeshCollider objectCollider = objectToSnap.GetComponent<MeshCollider>();
@@ -138,63 +160,31 @@ public class BuildingSystem : MonoBehaviour
                             (objectCollider.bounds.center.z - objectCollider.bounds.size.z / 2f)) + snappingOffset;
 
             //DEBUG STUFF
-            //GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //sphere.transform.position = position[0];
-            //sphere.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+            if (!debugcreated2)
+            {
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = position[0];
+                sphere.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
 
-            //GameObject sphere1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //sphere1.transform.position = position[1];
-            //sphere1.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                GameObject sphere1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere1.transform.position = position[1];
+                sphere1.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
 
-            //GameObject sphere2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //sphere2.transform.position = position[2];
-            //sphere2.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                GameObject sphere2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere2.transform.position = position[2];
+                sphere2.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
 
-            //GameObject sphere3 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //sphere3.transform.position = position[3];
-            //sphere3.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                GameObject sphere3 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere3.transform.position = position[3];
+                sphere3.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                debugcreated2 = true;
+            }
             //END OF DSEBUG STUFF
 
-            Vector3 updatedPosition = currentPosition;
-            float minDistance = float.MaxValue;
-            int index = 0;
-
-            for (int i = 0; i < 4; i++)
-            {
-                if (Vector3.Distance(currentPosition, position[i]) < minDistance)
-                {
-                    minDistance = Vector3.Distance(currentPosition, position[i]);
-                    updatedPosition = position[i];
-                    index = i;
-                }
-            }
-
-            switch (index)
-            {
-                case 0:
-                    currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                    break;
-
-                case 1:
-                    currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, -180f, 0f);
-                    break;
-
-                case 2:
-                    currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-                    break;
-
-                case 3:
-                    currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-                    break;
-            }
-
-            updatedPosition += new Vector3(0f, heightOffset, 0f);
-            currentPosition = (Vector3.Distance(currentPosition, updatedPosition) <= SnappingDistance) ? updatedPosition : currentPosition;
+            FindBestSnap(position);
         }
-
         currentPreviewGameObject.transform.position = currentPosition;
     }
-
 
 
     private void Place()
@@ -210,5 +200,44 @@ public class BuildingSystem : MonoBehaviour
             GameObject temp = currentPreviewGameObject;
             Destroy(temp);
         }
+    }
+
+    private void FindBestSnap(Vector3[] positions)
+    {
+        Vector3 updatedPosition = currentPosition;
+        float minDistance = float.MaxValue;
+        int index = 0;
+
+        for (int i = 0; i < positions.Length; i++)
+        {
+            if (Vector3.Distance(currentPosition, positions[i]) < minDistance)
+            {
+                minDistance = Vector3.Distance(currentPosition, positions[i]);
+                updatedPosition = positions[i];
+                index = i;
+            }
+        }
+
+        switch (index)
+        {
+            case 0:
+                currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                break;
+
+            case 1:
+                currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, -180f, 0f);
+                break;
+
+            case 2:
+                currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+                break;
+
+            case 3:
+                currentPreviewGameObject.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+                break;
+        }
+
+        updatedPosition += new Vector3(0f, heightOffset, 0f);
+        currentPosition = (Vector3.Distance(currentPosition, updatedPosition) <= SnappingDistance) ? updatedPosition : currentPosition;
     }
 }

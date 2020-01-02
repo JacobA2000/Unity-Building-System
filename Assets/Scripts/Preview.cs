@@ -65,29 +65,37 @@ public class Preview : MonoBehaviour
                 {
                     BuildingSystem.Instance.objectToSnap = _other.gameObject;
                     BuildingSystem.Instance.snapping = true;
-                    BuildingSystem.Instance.heightOffset = otherCollider.bounds.size.y /2;
-                    Debug.Log("W or D hitting F" + otherCollider.bounds.size.y /2);
+                    BuildingSystem.Instance.snappingOffset += new Vector3(0, otherCollider.bounds.size.y / 2f, 0);
+                    Debug.Log("W or D hitting F");
+                }
+                else if (_other.tag == "Wall")
+                {
+                    BuildingSystem.Instance.objectToSnap = _other.gameObject;
+                    BuildingSystem.Instance.snapping = true;
+                    BuildingSystem.Instance.snappingOffset += new Vector3(0, otherCollider.bounds.size.y / 2f, 0);
+                    Debug.Log("W or D hitting W");
                 }
             }
             else if (tag == "Roof")
             {
                 if (_other.tag == "Wall" || _other.tag == "Door")
                 {
-                    BuildingSystem.Instance.heightOffset = _other.transform.position.y + otherCollider.bounds.size.y / 2f;
-                    BuildingSystem.Instance.snappingOffset = meshcollider.bounds.center;
-                    Debug.Log("R hitting W or D");
-                }
-            }
-            else if(tag == "Foundation")
-            {
-                if(_other.tag == "Foundation")
-                {
                     BuildingSystem.Instance.objectToSnap = _other.gameObject;
                     BuildingSystem.Instance.snapping = true;
-                    Debug.Log("F hitting F");
+                    //BuildingSystem.Instance.heightOffset = otherCollider.bounds.size.y / 2f;
+                    BuildingSystem.Instance.snappingOffset += new Vector3(otherCollider.bounds.center.x, 0, 0);
+
+                    Debug.Log("R hitting W or D" + BuildingSystem.Instance.heightOffset);
                 }
             }
             else
+            {
+                contacts++;
+            }
+        }
+        else
+        {
+            if(tag == "Wall")
             {
                 contacts++;
             }
@@ -101,6 +109,21 @@ public class Preview : MonoBehaviour
             if (tag == "Wall" || tag == "Door")
             {
                 if (_other.tag == "Foundation")
+                {
+                    BuildingSystem.Instance.objectToSnap = null;
+                    BuildingSystem.Instance.snapping = false;
+                    BuildingSystem.Instance.snappingOffset = Vector3.zero;
+                }
+                else if (_other.tag == "Wall" || _other.tag == "Door")
+                {
+                    BuildingSystem.Instance.objectToSnap = null;
+                    BuildingSystem.Instance.snapping = false;
+                    BuildingSystem.Instance.snappingOffset = Vector3.zero;
+                }
+            }
+            else if(tag == "Roof")
+            {
+                if (_other.tag == "Wall" || _other.tag == "Door")
                 {
                     BuildingSystem.Instance.objectToSnap = null;
                     BuildingSystem.Instance.snapping = false;

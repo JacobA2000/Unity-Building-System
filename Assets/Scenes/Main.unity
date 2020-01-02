@@ -717,7 +717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AllowSnapping: 1
-  SnappingDistance: 1
+  SnappingDistance: 2
   BuildableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
